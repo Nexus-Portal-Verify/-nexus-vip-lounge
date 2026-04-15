@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Connections - Private Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff0055;
+            --secondary: #7000ff;
+            --bg-dark: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            /* High Quality Premium Background */
+            background-image: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(112, 0, 255, 0.2)), 
+                              url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Glass Container with Neon Border */
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2rem;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        /* Decorative Glowing Orbs */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary), var(--accent));
+            z-index: -1;
+            border-radius: 32px;
+            opacity: 0.3;
+            filter: blur(10px);
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(30px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        h1.main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #ffaccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        h2 { 
+            font-size: 1.4rem; 
+            margin-bottom: 1.5rem; 
+            color: #efefef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        p { color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 2rem; font-weight: 300; }
+
+        /* Premium Buttons */
+        .options-grid { display: flex; flex-direction: column; gap: 15px; }
+
+        button.opt-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button.opt-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+
+        /* Shine Effect on Hover */
+        button.opt-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        button.opt-btn:hover::before { left: 150%; }
+
+        button.main-action {
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4);
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button.main-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 0, 85, 0.6);
+        }
+
+        /* Progress Dots */
+        .progress-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
+        .dot { width: 30px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; transition: 0.4s; }
+        .dot.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+        /* Loader */
+        .loader {
+            width: 60px; height: 60px;
+            border: 3px solid transparent;
+            border-top-color: var(--accent);
+            border-bottom-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Footer */
+        footer { margin-top: 30px; color: rgba(255,255,255,0.4); font-size: 0.8rem; text-align: center; }
+        .secure-badge { background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 20px; margin-top: 10px; display: inline-block; }
+
+        @media (max-width: 480px) {
+            .container { padding: 2rem 1.5rem; }
+            h1.main-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <div class="step active" id="step1">
+        <h1 class="main-title">VIP ACCESS</h1>
+        <p>This is a private verification portal for local connections. Access is granted to verified adults only.</p>
+        <h2><i class="fas fa-id-badge"></i> Are you 18 or older?</h2>
+        <div class="options-grid">
+            <button class="opt-btn" onclick="nextStep(2)">Yes, I am 18+</button>
+            <button class="opt-btn" onclick="alert('Access Denied.')">No, I am under 18</button>
+        </div>
+    </div>
+
+    <div class="step" id="step2">
+        <h2><i class="fas fa-location-arrow"></i> Nearby Found!</h2>
+        <p>Verified members are currently active near <span id="loc" style="color:var(--accent); font-weight:bold;">[Detecting...]</span>. Do you wish to view them?</p>
+        <div class="options-grid">
+            <button class="opt-btn" onclick="nextStep(3)">Show Local Profiles</button>
+            <button class="opt-btn" onclick="nextStep(3)">Browse Worldwide</button>
+        </div>
+    </div>
+
+    <div class="step" id="step3">
+        <h2><i class="fas fa-fire"></i> Your Goal?</h2>
+        <p>Select the type of connection you are seeking tonight:</p>
+        <div class="options-grid">
+            <button class="opt-btn" onclick="nextStep(4)">Discreet Fun</button>
+            <button class="opt-btn" onclick="nextStep(4)">Casual Dating</button>
+            <button class="opt-btn" onclick="nextStep(4)">Serious Relationship</button>
+        </div>
+    </div>
+
+    <div class="step" id="step4">
+        <h2><i class="fas fa-search"></i> Seeking?</h2>
+        <p>Who are you interested in meeting?</p>
+        <div class="options-grid">
+            <button class="opt-btn" onclick="nextStep(5)">Men seeking Women</button>
+            <button class="opt-btn" onclick="nextStep(5)">Women seeking Men</button>
+            <button class="opt-btn" onclick="nextStep(5)">Other Preferences</button>
+        </div>
+    </div>
+
+    <div class="step" id="step5">
+        <h2><i class="fas fa-map"></i> Distance?</h2>
+        <p>Maximum distance for your potential match?</p>
+        <div class="options-grid">
+            <button class="opt-btn" onclick="runCheck()">Within 5km</button>
+            <button class="opt-btn" onclick="runCheck()">Within 25km</button>
+            <button class="opt-btn" onclick="runCheck()">Anywhere</button>
+        </div>
+    </div>
+
+    <div class="step" id="step6">
+        <h2>Handshaking...</h2>
+        <div class="loader"></div>
+        <p id="stat-msg">Analyzing local database...</p>
+    </div>
+
+    <div class="step" id="step7">
+        <h2><i class="fas fa-shield-alt"></i> Final Rule</h2>
+        <p>You must agree to keep all user identities and photos private. Leaking info results in a permanent ban.</p>
+        <button class="main-action" onclick="nextStep(8)">I AGREE, CONTINUE</button>
+    </div>
+
+    <div class="step" id="step8">
+        <h2 style="color:#00ff88">Verification Successful!</h2>
+        <p>We found <strong>4 active matches</strong> in your area. Registration is required to message them.</p>
+        <button class="main-action" style="background: #00ff88; color: #000;" onclick="redirect()">SEE MATCHES NOW</button>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 VIP Connections. All Rights Reserved.</p>
+    <div class="secure-badge"><i class="fas fa-lock"></i> SSL ENCRYPTED SESSION</div>
+</footer>
+
+<script>
+    const offerLink = "YOUR_OFFER_LINK_HERE";
+    
+    // Simulate Location
+    const locs = ["New York", "London", "Paris", "Toronto", "Sydney"];
+    document.getElementById('loc').innerText = locs[Math.floor(Math.random()*locs.length)];
+
+    function nextStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step'+n).classList.add('active');
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((d, i) => i < n ? d.classList.add('active') : d.classList.remove('active'));
+    }
+
+    function runCheck() {
+        nextStep(6);
+        const msgs = ["Checking IP availability...", "Matching preferences...", "Finalizing profiles...", "Matches Found!"];
+        let i = 0;
+        let t = setInterval(() => {
+            document.getElementById('stat-msg').innerText = msgs[i];
+            i++;
+            if(i >= msgs.length) { clearInterval(t); nextStep(7); }
+        }, 1200);
+    }
+
+    function redirect() { window.location.href = offerLink; }
+</script>
+
+</body>
+</html>
